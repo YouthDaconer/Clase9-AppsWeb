@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Form from './components/Form';
 
@@ -7,16 +7,19 @@ import Form from './components/Form';
   - Permitir completar la tarea
   - Van a organizar el CSS a un diseño mas agradable
  */
-
 const App = () => {
+
   return (
-    <div className='App'>
-      <div className='App-content'>
-        <p>Aqui haremos nuestro TODO</p>
-        <Form />
+    <>
+      <div className='App'>
+        <div className='App-content'>
+          <p>Aqui haremos nuestro TODO</p>
+          <Form />
+        </div>
       </div>
-    </div>
+    </>
   );
-};
+
+}
 
 export default App;
