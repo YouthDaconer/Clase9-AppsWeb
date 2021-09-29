@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import Form from './components/Form';
+import 'bootstrap/dist/css/bootstrap.css';
 
 /* ACTIVIDAD
   - Van a habilitar la opcion de editar el todo, abre un input y edita el todo.
@@ -13,7 +14,7 @@ const App = () => {
     <>
       <div className='App'>
         <div className='App-content'>
-          <p>Aqui haremos nuestro TODO</p>
+          <p class="title-app">Organizador de tareas</p>
           <Form />
         </div>
       </div>

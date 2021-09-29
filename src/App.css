@@ -20,8 +20,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
@@ -37,26 +35,13 @@
   }
 }
 
-form input {
-  height: 26px;
-  border-radius: 5%;
-  display: flex;
-  vertical-align: auto;
+.title-app {
+  color: white;
+  font-size: calc(10px + 2vmin);
 }
 
-form button {
-  cursor: pointer;
-  display: inline-block;
-  text-align: center;
-  text-decoration: none;
-  margin: 2px 0;
-  border: solid 1px transparent;
-  border-radius: 4px;
-  padding: 0.5em 1em;
-  color: #ffffff;
+#btn-create {
   background-color: darkgreen;
-  height: 30px;
-  width: 120px;
 }
 
 h3 {
@@ -70,29 +55,8 @@ h3 {
   align-items: flex-end;
 }
 
-.btn-delete {
-  background-color: red;
-}
-
-.btn-edit {
-  background-color: aqua;
-}
-
 .buttons {
   padding: 20px;
-}
-
-.btn-delete,
-.btn-edit {
-  display: inline-block;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  border: solid 1px transparent;
-  border-radius: 4px;
-  color: #ffffff;
-  height: 30px;
-  width: 30px;
 }
 
 #tareas {

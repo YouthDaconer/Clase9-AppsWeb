@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import Todo from './Todo';
-import '../App.css';
+import React, { useState } from "react";
+import Todo from "./Todo";
+import "../App.css";
 import {
   Table,
   Button,
@@ -12,117 +12,130 @@ import {
 } from "reactstrap";
 
 const Form = () => {
-
   const [todos, setTodos] = useState([]);
-  const [updateModal, setUpdateModal] = useState(false);
-  const [todo, setTodo] = useState({ todo: '', status: false });
-  const [todoEdit, setTodoEdit] = useState({ todo: '', status: false });
 
-  const showUpdateModal = (_todo) => {
-    setTodoEdit({
-      todo: _todo.todo,
-      status: _todo.status,
-      id: _todo.id
-    });
-    setUpdateModal(true);
-  };
+  const [newTodoName, setNewTodoName] = useState("");
+  const [editTodoName, setEditTodoName] = useState("");
 
-  const changeStateTodo = (todoSet) => {
-    var loop = 0;
-    var _todos = todos;
-    _todos.map((_todo) => {
-      if (todoSet.id === _todo.id) {
-        if (todoSet.status) {
-          _todos[loop].status = false;
-        } else {
-          _todos[loop].status = true;
-        }
-      }
-      loop++;
-    });
-    setTodos(_todos);
-    console.log(todos);
-  };
+  const [modalEdit, setEditModal] = useState(false);
+  const [todoEdit, setTodoEdit] = useState({});
 
-  const closeUpdateModal = () => {
-    setUpdateModal(false);
-  };
+  /* Crear tarea */
+  const create = (e) => {
+    e.preventDefault();
 
-  const edit = (todoSet) => {
-    if (Object.keys(todoSet).length === 0 || todoSet.todo.trim() === '') {
-      alert('El campo no puede estar vacio');
+    if (newTodoName === "") {
+      alert("El nombre de la tarea es obligatorio");
       return;
     }
-    var loop = 0;
-    var _todos = todos;
-    _todos.map((_todo) => {
-      var breakLoop = false;
-      if (todoSet.id == _todo.id) {
-        console.log("Entró");
-        _todos[loop].todo = _todo.todo;
-        console.log(_todos[loop].todo + " -- Se debió haber cambiado");
-        breakLoop = true;
-      }
-      if (breakLoop) {
-        return;
-      }
-      loop++;
-    });
-    console.log(_todos);
-    setTodos(_todos);
-    console.log(todos);
-    setUpdateModal(false);
+
+    const newTodo = {
+      id: todos.length + 1,
+      name: newTodoName,
+      status: false,
+    };
+
+    setTodos([...todos, newTodo]);
+    setNewTodoName("");
   };
 
-  const remove = (index) => {
+  /* Editar tarea */
+  const edit = (id, editTodoName) => {
+    if (editTodoName === "") {
+      alert("El nombre de la tarea es obligatorio");
+      return;
+    }
+
+    const todoIndex = todos.findIndex((todo) => todo.id === id);
+
+    // Reconstruimos el array con el todo editado
+    const newTodoArray = [
+      ...todos.slice(0, todoIndex),
+      { ...todoEdit, name: editTodoName },
+      ...todos.slice(todoIndex + 1),
+    ];
+
+    setTodos(newTodoArray);
+    handleCloseEditModal();
+  };
+
+  /* Eliminar tarea */
+  const remove = (id) => {
     var response = window.confirm("¿Desea eliminar la tarea?");
 
     if (response) {
-      const newTodos = [...todos];
-      newTodos.splice(index, 1);
-      setTodos(newTodos);
-      setUpdateModal(false);
+      const todoIndexRemove = todos.findIndex((todo) => todo.id === id);
+
+      // Reconstruimos el array sin la tarea que se quitará
+      const newTodoArray = [
+        ...todos.slice(0, todoIndexRemove),
+        ...todos.slice(todoIndexRemove + 1),
+      ];
+
+      setTodos(newTodoArray);
+      handleCloseEditModal();
     }
   };
 
-  const create = (e) => {
-    if (Object.keys(todo).length === 0 || todo.todo.trim() === '') {
-      alert('El campo no puede estar vacio');
-      return;
-    }
-    var newTodo = { ...todo };
-    newTodo.id = todos.length + 1;
-    newTodo.status = false;
-    todos.push(newTodo);
-    setTodos(todos);
+  /* Completar tarea */
+  const complete = (id, status) => {
+    const todoComplete = todos.find((todo) => todo.id === id);
+    const todoIndexComplete = todos.findIndex((todo) => todo.id === id);
 
-    setTodo({
-      todo: '',
-      status: false
-    });
+    // Reconstruimos el array con el estado de la tarea cambiado
+    const newTodoArray = [
+      ...todos.slice(0, todoIndexComplete),
+      { ...todoComplete, status },
+      ...todos.slice(todoIndexComplete + 1),
+    ];
+
+    setTodos(newTodoArray);
+    handleCloseEditModal();
+  };
+
+  /* Bloque de handlers */
+
+  const handleOpenEditModal = (todo) => {
+    setTodoEdit(todo);
+    setEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditTodoName("");
+    setEditModal(false);
   };
 
   const handleChange = (e) => {
-    setTodo({
-      todo: e.target.value,
-    });
+    setNewTodoName(e.target.value);
   };
 
   const handleEditChange = (e) => {
-    setTodoEdit({
-      ...todoEdit,
-      todo: e.target.value,
-    });
+    setEditTodoName(e.target.value);
   };
 
   return (
     <>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <label>Agregar tarea</label>
-        <br />
-        <input type='text' name='todo' value={todo.todo} onChange={handleChange}></input>
-        <button onClick={create}>Agregar</button>
-      </form>
+      <div class="card">
+        <div class="card-body">
+          <form onSubmit={create}>
+            <div class="form-group">
+              <label for="todo">Nombre de la tarea:</label>
+              <br />
+              <br />
+              <input
+                id="todo"
+                class="form-control"
+                type="text"
+                name="todo"
+                value={newTodoName}
+                onChange={handleChange}
+              ></input>
+            </div>
+            <br />
+            <button class="btn btn-success" id="btn-create" onClick={create}>Agregar</button>
+          </form>
+        </div>
+      </div>
       <br />
       <Table id="tareas">
         <thead>
@@ -133,55 +146,54 @@ const Form = () => {
           </tr>
         </thead>
         <tbody>
-          {
-            (todos.length === 0) ?
-              <tr>
-                <td colSpan="3">No hay tareas</td>
-              </tr>
-              :
-              todos.map((_todo) => (
-                <Todo
-                  todo={_todo.todo}
-                  status={_todo.status}
-                  key={_todo.id}
-                  id={_todo.id}
-                  remove={remove}
-                  showUpdateModal={showUpdateModal}
-                  changeStateTodo={changeStateTodo}
-                />
-              ))
-          }
+          {todos.length > 0 ? (
+            todos.map((todo) => (
+              <Todo
+                todo={todo}
+                key={todo.id}
+                onCompleteTodo={(status) =>
+                  complete(todo.id, status)
+                }
+                onOpenEditModal={(todo) => handleOpenEditModal(todo)}
+                onRemove={(id) => remove(id)}
+              />
+            ))
+          ) : (
+            <tr>
+              <td colSpan={3}>No hay tareas</td>
+            </tr>
+          )}
         </tbody>
       </Table>
 
-      <Modal isOpen={updateModal}>
+      <Modal isOpen={modalEdit}>
         <ModalHeader>
-          <div><h3>Editar Tarea {todoEdit.todo}</h3></div>
+          <div>
+            <h3>Editar Tarea: {todoEdit.name}</h3>
+          </div>
         </ModalHeader>
         <ModalBody>
-          <FormGroup>
-            <label>
-              Todo:
-            </label>
-            <input
-              name="todoEdit"
-              type="text"
-              onChange={handleEditChange}
-            />
-          </FormGroup>
+          <form>
+            <div class="form-group row">
+              <label for="todoEdit" class="col-sm-2 col-form-label">Nombre: </label>
+              <div class="col-sm-10">
+                <input
+                  id="todoEdit"
+                  name="todoEdit"
+                  type="text"
+                  value={editTodoName}
+                  onChange={handleEditChange}
+                />
+              </div>
+            </div>
+          </form>
         </ModalBody>
 
         <ModalFooter>
-          <Button
-            onClick={() => edit(todoEdit)}
-          >
-            Editar
-          </Button>
-          <Button
-            onClick={() => closeUpdateModal()}
-          >
-            Cancelar
-          </Button>
+          <button class="btn btn-success" onClick={() => edit(todoEdit.id, editTodoName)}>
+            Guardar
+          </button>
+          <button class="btn btn-danger" onClick={handleCloseEditModal}>Cancelar</button>
         </ModalFooter>
       </Modal>
     </>

@@ -1,26 +1,45 @@
-import React from 'react';
-import {
-  Button,
-} from "reactstrap";
+import React, { useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const Todo = ({ todo, status, id, remove, showUpdateModal, changeStateTodo }) => {
+import { Button } from "reactstrap";
+
+const Todo = ({
+  todo,
+  onCompleteTodo,
+  onOpenEditModal: handleOpenEditModal,
+  onRemove: handleRemoveTodo,
+}) => {
+
+  const handleOnCheckTodo = (e) => {
+    setStatus(e.target.checked);
+    onCompleteTodo(!status);
+  };
+  const [status, setStatus] = useState(todo.status);
+
   return (
     <>
       <tr>
-        <td><h3>{todo}</h3></td>
         <td>
-          <input type='checkbox'
-            value={id}
-            onChange={() => changeStateTodo({ todo: todo, status: status, id: id })}
-            checked={status ? true : false}
-          />
+          <strong><label>{todo.name}</label></strong>
         </td>
-        <td className='buttons'>
-          <Button className='btn-delete' onClick={() => remove(id)}>
-            X
+        <td>
+          <label>
+            <input
+              type="checkbox"
+              value={status}
+              onChange={handleOnCheckTodo} />
+            {todo.status ? (<strong>Completada</strong>) : (<strong>Pendiente</strong>)}
+          </label>
+        </td>
+        <td className="buttons">
+          <Button
+            className="btn btn-danger"
+            onClick={() => handleRemoveTodo(todo.id)}
+          >
+            Eliminar
           </Button>{" "}
-          <Button className='btn-edit' onClick={() => showUpdateModal({ todo: todo, status: status, id: id })}>
-            E
+          <Button className="btn btn-warning" onClick={() => handleOpenEditModal(todo)}>
+            Editar
           </Button>
         </td>
       </tr>
